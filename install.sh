@@ -11,7 +11,8 @@ apt-get install -y autossh
 
 echo "## Replacing environment variables in service file"
 
-SERVICE_CONTENT=$(envsubst < ./autossh-tunnel.service.template)
+BASEDIR=$(dirname "$BASH_SOURCE")
+SERVICE_CONTENT=$(envsubst < $BASEDIR/autossh-tunnel.service.template)
 echo "$SERVICE_CONTENT"
 echo "$SERVICE_CONTENT" > /etc/systemd/system/autossh-tunnel.service
 
