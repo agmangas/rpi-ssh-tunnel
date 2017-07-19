@@ -53,16 +53,33 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDgPfyqujI9GQckCB1SGRsrdTooOm9znf2nBSIOGThj
 
 Then, we need to append the RPi public key to the `~/.ssh/authorized_keys` remote file. This will enable password-less SSH access from the RPi to the remote public server.
 
-Copy the `id_rsa.pub` file from the RPi to the remote public server on `/tmp/id_rsa.pub` and run the following command:
+The following configuration options are highly recommended to restrict the tunnel and decrease the risk of it being used by a malicious user to obtain undesired access to the remote server:
+
+Option | Description | Value
+--- | --- | ---
+`no-pty` | Prevents tty allocation (a request to allocate a pty will fail). | *None*
+`no-user-rc` | Disables execution of *~/.ssh/rc*. | *None*
+`no-X11-forwarding` | Forbids X11 forwarding when this key is used for authentication. Any X11 forward requests by the client will return an error. | *None*
+`command` | Specifies that the	command	is executed whenever this key is used for authentication. The command supplied by the user (if any) is ignored. | `/bin/cat`
+`permitopen` | Limit local port forwarding with ssh(1) -L such that it may only connect to the specified host and port. | `255.255.255.255:9`
+
+These options defined as an environment variable:
 
 ```
-cat /tmp/id_rsa.pub >> ~/.ssh/authorized_keys
+export AUTHORIZED_KEYS_OPTIONS="no-pty,no-user-rc,no-X11-forwarding,permitopen=\"255.255.255.255:9\",command=\"/bin/cat\""
 ```
 
-Now check that the connection actually works:
+Assumming that the `RPI_PUB_KEY` variable contains the RPi public key we may append the key to the `~/.ssh/authorized_keys` as follows:
 
 ```
-ssh remote.user@remote.hostname
+echo "${AUTHORIZED_KEYS_OPTIONS} ${RPI_PUB_KEY}" >> ~/.ssh/authorized_keys
+```
+
+Now check that the connection works but PTY allocation fails (due to the `no-pty` option):
+
+```
+$ ssh remote.user@remote.hostname
+PTY allocation request failed on channel 0
 ```
 
 ### Run service installation script
@@ -74,7 +91,7 @@ This script needs a couple of configuration variables:
 Environment variable | Description
 --- | ---
 `SSH_TUNNEL_REMOTE_PORT` | Remote public server port in which the tunnel should be exposed.
-`SSH_TUNNEL_CONNECTION` | Remote public server user and hostname with optional *ssh* arguments (e.g. `user@hostname -p 2222`).
+`SSH_TUNNEL_CONNECTION` | Remote public server user and hostname with optional *ssh* connection arguments (e.g. `user@hostname -p 2222`).
 
 ```
 sudo SSH_TUNNEL_REMOTE_PORT=22221 SSH_TUNNEL_CONNECTION=user@192.168.2.27 ./run.sh
