@@ -69,7 +69,7 @@ These options defined as an environment variable:
 export AUTHORIZED_KEYS_OPTIONS="no-pty,no-user-rc,no-X11-forwarding,permitopen=\"255.255.255.255:9\",command=\"/bin/cat\""
 ```
 
-Assumming that the `RPI_PUB_KEY` variable contains the RPi public key we may append the key to the `~/.ssh/authorized_keys` as follows:
+Assuming that the `RPI_PUB_KEY` variable contains the RPi public key we may append the key to the `~/.ssh/authorized_keys` as follows:
 
 ```
 echo "${AUTHORIZED_KEYS_OPTIONS} ${RPI_PUB_KEY}" >> ~/.ssh/authorized_keys
