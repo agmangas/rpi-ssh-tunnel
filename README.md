@@ -94,7 +94,7 @@ Environment variable | Description
 `SSH_TUNNEL_CONNECTION` | Remote public server user and hostname with optional *ssh* connection arguments (e.g. `user@hostname -p 2222`).
 
 ```
-sudo SSH_TUNNEL_REMOTE_PORT=22221 SSH_TUNNEL_CONNECTION=user@192.168.2.27 ./run.sh
+sudo SSH_TUNNEL_REMOTE_PORT=22221 SSH_TUNNEL_CONNECTION=user@192.168.2.27 ./install.sh
 ```
 
 We may use the `systemctl` command to manage `autossh-tunnel.service` like any other *systemd* service. For example, to check the service status:
