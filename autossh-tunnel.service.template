@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Environment="AUTOSSH_GATETIME=0"
-ExecStart=/usr/bin/autossh -M 0 -o "ServerAliveInterval 90" -o "ServerAliveCountMax 3" -NR ${SSH_TUNNEL_REMOTE_PORT}:localhost:22 ${SSH_TUNNEL_CONNECTION}
+ExecStart=/usr/bin/autossh -M 0 -o "ServerAliveInterval 90" -o "ServerAliveCountMax 3" -o "ExitOnForwardFailure=yes" -NR ${SSH_TUNNEL_REMOTE_PORT}:localhost:22 ${SSH_TUNNEL_CONNECTION}
 
 [Install]
 WantedBy=multi-user.target
